@@ -1,7 +1,7 @@
 asyncpg-utils
 =============
 
-|TravisCI Build Status| |Coverage Status| |Requirements Status|
+|TravisCI Build Status| |Coverage Status| |Requirements Status| |Version|
 
 ----
 
@@ -97,3 +97,5 @@ Check `https://github.com/allisson/asyncpg-utils/tree/master/examples <https://g
    :target: https://codecov.io/gh/allisson/asyncpg-utils
 .. |Requirements Status| image:: https://requires.io/github/allisson/asyncpg-utils/requirements.svg?branch=master
    :target: https://requires.io/github/allisson/asyncpg-utils/requirements/?branch=master
+.. |Version| image:: https://badge.fury.io/py/asyncpg-utils.svg
+    :target: https://badge.fury.io/py/asyncpg-utils
