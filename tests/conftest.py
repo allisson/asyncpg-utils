@@ -1,11 +1,13 @@
 import asyncio
 import os
+import uuid
 from datetime import date
 
 import asyncpg
 import pytest
 
 from asyncpg_utils.databases import Database, PoolDatabase
+from asyncpg_utils.managers import TableManager
 
 dsn = os.environ.get('DATABASE_URL')
 loop = asyncio.get_event_loop()
@@ -16,7 +18,7 @@ async def create_table(dsn):
     await conn.execute(
         """
         CREATE TABLE IF NOT EXISTS users(
-            id serial PRIMARY KEY,
+            id uuid PRIMARY KEY,
             name text,
             dob date
         )
@@ -75,6 +77,12 @@ def pool_database():
 @pytest.fixture
 def user_data():
     return {
+        'id': str(uuid.uuid4()),
         'name': 'Allisson',
         'dob': date(1983, 2, 9)
     }
+
+
+@pytest.fixture
+def table_manager(database):
+    return TableManager(database, 'users')
