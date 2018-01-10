@@ -21,7 +21,8 @@ class TableManager:
         self._table = Table(self.table_name)
 
     async def trigger_hooks(self, event_name, *args, **kwargs):
-        return [await hook.trigger_event(event_name, *args, **kwargs) for hook in self.hooks]
+        for hook in self.hooks:
+            await hook.trigger_event(event_name, *args, **kwargs)
 
     async def create(self, data):
         field_names = [field_name for field_name in data.keys()]
