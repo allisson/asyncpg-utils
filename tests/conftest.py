@@ -4,10 +4,11 @@ import uuid
 from datetime import date
 
 import asyncpg
+import asynctest
 import pytest
 
 from asyncpg_utils.databases import Database, PoolDatabase
-from asyncpg_utils.managers import TableManager
+from asyncpg_utils.managers import AbstractHook, TableManager
 
 dsn = os.environ.get('DATABASE_URL')
 loop = asyncio.get_event_loop()
@@ -83,6 +84,42 @@ def user_data():
     }
 
 
+class TestHook(AbstractHook):
+    def __init__(self, table_manager):
+        super().__init__(table_manager)
+        self.table_manager.hook_event_mock = asynctest.CoroutineMock()
+
+    async def pre_create(self, data):
+        self.table_manager.hook_event_mock.pre_create(data)
+
+    async def post_create(self, row):
+        self.table_manager.hook_event_mock.post_create(row)
+
+    async def pre_list(self, fields, filters):
+        self.table_manager.hook_event_mock.pre_list(fields, filters)
+
+    async def post_list(self, rows):
+        self.table_manager.hook_event_mock.post_list(rows)
+
+    async def pre_detail(self, pk, fields):
+        self.table_manager.hook_event_mock.pre_detail(pk, fields)
+
+    async def post_detail(self, row):
+        self.table_manager.hook_event_mock.post_detail(row)
+
+    async def pre_update(self, pk, data):
+        self.table_manager.hook_event_mock.pre_update(pk, data)
+
+    async def post_update(self, row):
+        self.table_manager.hook_event_mock.post_update(row)
+
+    async def pre_delete(self, pk):
+        self.table_manager.hook_event_mock.pre_delete(pk)
+
+    async def post_delete(self, pk):
+        self.table_manager.hook_event_mock.post_delete(pk)
+
+
 @pytest.fixture
 def table_manager(database):
-    return TableManager(database, 'users')
+    return TableManager(database, 'users', hooks=(TestHook,))

@@ -11,6 +11,8 @@ async def test_table_manager_create(table_manager, user_data):
     assert row['id']
     assert row['name'] == user_data['name']
     assert row['dob'] == user_data['dob']
+    assert table_manager.hook_event_mock.pre_create.called is True
+    assert table_manager.hook_event_mock.post_create.called is True
 
 
 async def test_table_manager_list(table_manager, user_data):
@@ -21,6 +23,8 @@ async def test_table_manager_list(table_manager, user_data):
     assert row['id']
     assert row['name'] == user_data['name']
     assert row['dob'] == user_data['dob']
+    assert table_manager.hook_event_mock.pre_list.called is True
+    assert table_manager.hook_event_mock.post_list.called is True
 
 
 async def test_table_manager_list_with_fields(table_manager, user_data):
@@ -59,6 +63,8 @@ async def test_table_manager_detail(table_manager, user_data):
     assert selected_row['id']
     assert selected_row['name'] == user_data['name']
     assert selected_row['dob'] == user_data['dob']
+    assert table_manager.hook_event_mock.pre_detail.called is True
+    assert table_manager.hook_event_mock.post_detail.called is True
 
 
 async def test_table_manager_detail_with_fields(table_manager, user_data):
@@ -82,6 +88,8 @@ async def test_table_manager_update(table_manager, user_data):
     row = await table_manager.update(id, john_doe_data)
     assert row['name'] == john_doe_data['name']
     assert row['dob'] == john_doe_data['dob']
+    assert table_manager.hook_event_mock.pre_update.called is True
+    assert table_manager.hook_event_mock.post_update.called is True
 
 
 async def test_table_manager_delete(table_manager, user_data):
@@ -90,3 +98,10 @@ async def test_table_manager_delete(table_manager, user_data):
     assert await table_manager.delete(id) is True
     rows = await table_manager.list()
     assert len(rows) == 0
+    assert table_manager.hook_event_mock.pre_delete.called is True
+    assert table_manager.hook_event_mock.post_delete.called is True
+
+
+async def test_hook_trigger_invalid_event(table_manager, user_data):
+    hook = table_manager.hooks[0]
+    assert await hook.trigger_event('invalid_event') is None

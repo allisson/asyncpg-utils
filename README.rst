@@ -1,3 +1,4 @@
+=============
 asyncpg-utils
 =============
 
@@ -9,7 +10,7 @@ Utilities for Asyncpg.
 
 
 How to install
---------------
+==============
 
 .. code:: shell
 
@@ -17,7 +18,7 @@ How to install
 
 
 How to Use
-----------
+==========
 
 **Python code:**
 
