@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+0.3.0
+~~~~~
+
+* Use jinja2 templates for sql queries, drop PyPika from requirements.
+
 0.2.1
 ~~~~~
 
