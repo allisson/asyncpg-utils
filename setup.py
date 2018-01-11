@@ -24,8 +24,10 @@ with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 with codecs.open(os.path.join(here, 'CHANGES.rst'), encoding='utf-8') as f:
     changelog = f.read()
 
+# Get requirements
+with codecs.open(os.path.join(here, 'requirements.txt')) as f:
+    install_requirements = [line.strip() for line in f.readlines()]
 
-install_requirements = []
 tests_requirements = [
     'pytest',
     'pytest-cov',
