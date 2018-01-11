@@ -19,8 +19,8 @@ class TestHook(AbstractHook):
     async def post_create(self, row):
         print('post_create, row={!r}'.format(row))
 
-    async def pre_list(self, fields, filters):
-        print('pre_list, fields={!r}, filters={!r}'.format(fields, filters))
+    async def pre_list(self, fields, filters, order_by, order_by_sort):
+        print('pre_list, fields={!r}, filters={!r}, order_by={!r}, order_by_sort={!r}'.format(fields, filters, order_by, order_by_sort))
 
     async def post_list(self, rows):
         print('post_list, rows={!r}'.format(rows))

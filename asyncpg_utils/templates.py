@@ -19,6 +19,7 @@ sql_list_template = Template(
     WHERE
     {% for filter in filters %}"{{ filter }}" = ${{ loop.index }}{% endfor %}
     {% endif %}
+    {% if order_by %}ORDER BY "{{ order_by }}" {{ order_by_sort }}{% endif %}
     """
 )
 

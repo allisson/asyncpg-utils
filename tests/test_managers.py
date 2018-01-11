@@ -56,6 +56,29 @@ async def test_table_manager_list_with_filters(table_manager, user_data):
     assert str(row['id']) == user1_data['id']
 
 
+async def test_table_manager_list_with_order_by(table_manager, user_data):
+    user1_data = {
+        'id': str(uuid.uuid4()),
+        'name': 'Allisson',
+        'dob': date(1983, 2, 9)
+    }
+    user2_data = {
+        'id': str(uuid.uuid4()),
+        'name': 'John Doe',
+        'dob': date(2000, 1, 1)
+    }
+    await table_manager.create(user1_data)
+    await table_manager.create(user2_data)
+
+    rows = await table_manager.list(order_by='name', order_by_sort='ASC')
+    assert rows[0]['name'] == 'Allisson'
+    assert rows[1]['name'] == 'John Doe'
+
+    rows = await table_manager.list(order_by='name', order_by_sort='DESC')
+    assert rows[0]['name'] == 'John Doe'
+    assert rows[1]['name'] == 'Allisson'
+
+
 async def test_table_manager_detail(table_manager, user_data):
     created_row = await table_manager.create(user_data)
     selected_row = await table_manager.detail(str(created_row['id']))

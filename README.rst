@@ -270,8 +270,8 @@ Table Manager Hook
         async def post_create(self, row):
             print('post_create, row={!r}'.format(row))
 
-        async def pre_list(self, fields, filters):
-            print('pre_list, fields={!r}, filters={!r}'.format(fields, filters))
+        async def pre_list(self, fields, filters, order_by, order_by_sort):
+            print('pre_list, fields={!r}, filters={!r}, order_by={!r}, order_by_sort={!r}'.format(fields, filters, order_by, order_by_sort))
 
         async def post_list(self, rows):
             print('post_list, rows={!r}'.format(rows))
@@ -330,13 +330,13 @@ Table Manager Hook
     # python table_manager_hook.py
     create_table users, True
     pre_create, data={'name': 'Allisson', 'dob': datetime.date(1983, 2, 9)}
-    post_create, row=<Record id=2 name='Allisson' dob=datetime.date(1983, 2, 9)>
-    pre_list, fields=None, filters={}
-    post_list, rows=[<Record id=2 name='Allisson' dob=datetime.date(1983, 2, 9)>]
+    post_create, row=<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>
+    pre_list, fields=None, filters={}, order_by=None, order_by_sort='ASC'
+    post_list, rows=[<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>]
     pre_detail, pk=1, fields=None
-    post_detail, row=None
+    post_detail, row=<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>
     pre_update, pk=1, data={'name': 'John Doe', 'dob': datetime.date(1983, 2, 9)}
-    post_update, row=None
+    post_update, row=<Record id=1 name='John Doe' dob=datetime.date(1983, 2, 9)>
     pre_delete, pk=1
     post_delete, pk=1
 

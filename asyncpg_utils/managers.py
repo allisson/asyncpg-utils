@@ -41,15 +41,17 @@ class TableManager:
         await self.trigger_hooks('post_create', row)
         return row
 
-    async def list(self, fields=None, filters=None):
+    async def list(self, fields=None, filters=None, order_by=None, order_by_sort='ASC'):
         filters = filters or {}
         filter_values = [filter_value for _, filter_value in filters.items()]
         sql_query = sql_list_template.render({
             'table_name': self.table_name,
             'fields': fields,
-            'filters': filters
+            'filters': filters,
+            'order_by': order_by,
+            'order_by_sort': order_by_sort
         })
-        await self.trigger_hooks('pre_list', fields, filters)
+        await self.trigger_hooks('pre_list', fields, filters, order_by, order_by_sort)
         rows = await self.database.query(sql_query, *filter_values)
         await self.trigger_hooks('post_list', rows)
         return rows

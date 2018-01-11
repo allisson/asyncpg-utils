@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+0.4.0
+~~~~~
+
+* Add TableManager order_by support.
+
 0.3.0
 ~~~~~
 

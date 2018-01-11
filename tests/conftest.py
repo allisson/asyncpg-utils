@@ -95,8 +95,8 @@ class TestHook(AbstractHook):
     async def post_create(self, row):
         self.table_manager.hook_event_mock.post_create(row)
 
-    async def pre_list(self, fields, filters):
-        self.table_manager.hook_event_mock.pre_list(fields, filters)
+    async def pre_list(self, fields, filters, order_by, order_by_sort):
+        self.table_manager.hook_event_mock.pre_list(fields, filters, order_by, order_by_sort)
 
     async def post_list(self, rows):
         self.table_manager.hook_event_mock.post_list(rows)
