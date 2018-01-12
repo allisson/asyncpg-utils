@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+0.4.1
+~~~~~
+
+* Fix fields on templates.
+
 0.4.0
 ~~~~~
 

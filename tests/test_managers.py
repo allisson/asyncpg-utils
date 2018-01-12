@@ -37,6 +37,14 @@ async def test_table_manager_list_with_fields(table_manager, user_data):
     assert 'dob' not in row
 
 
+async def test_table_manager_list_with_count_field(table_manager, user_data):
+    await table_manager.create(user_data)
+    rows = await table_manager.list(fields=['COUNT(1)'])
+    assert len(rows) == 1
+    row = rows[0]
+    assert row['count'] == 1
+
+
 async def test_table_manager_list_with_filters(table_manager, user_data):
     user1_data = {
         'id': str(uuid.uuid4()),
@@ -97,6 +105,15 @@ async def test_table_manager_detail_with_fields(table_manager, user_data):
     assert 'id' not in selected_row
     assert selected_row['name'] == user_data['name']
     assert 'dob' not in selected_row
+
+
+async def test_table_manager_detail_with_other_pk_field(table_manager, user_data):
+    created_row = await table_manager.create(user_data)
+    selected_row = await table_manager.detail(created_row['name'], pk_field='name')
+    assert created_row['id'] == selected_row['id']
+    assert selected_row['id']
+    assert selected_row['name'] == user_data['name']
+    assert selected_row['dob'] == user_data['dob']
 
 
 async def test_table_manager_update(table_manager, user_data):

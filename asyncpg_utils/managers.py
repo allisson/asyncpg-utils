@@ -56,11 +56,12 @@ class TableManager:
         await self.trigger_hooks('post_list', rows)
         return rows
 
-    async def detail(self, pk, fields=None):
+    async def detail(self, pk, pk_field=None, fields=None):
+        pk_field = pk_field or self.pk_field
         sql_query = sql_detail_template.render({
             'table_name': self.table_name,
             'fields': fields,
-            'pk_field': self.pk_field
+            'pk_field': pk_field
         })
         await self.trigger_hooks('pre_detail', pk, fields)
         row = await self.database.query_one(sql_query, pk)
