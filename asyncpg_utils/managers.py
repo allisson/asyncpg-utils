@@ -63,7 +63,7 @@ class TableManager:
             'fields': fields,
             'pk_field': pk_field
         })
-        await self.trigger_hooks('pre_detail', pk, fields)
+        await self.trigger_hooks('pre_detail', pk, pk_field, fields)
         row = await self.database.query_one(sql_query, pk)
         await self.trigger_hooks('post_detail', row)
         return row

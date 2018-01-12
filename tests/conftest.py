@@ -101,8 +101,8 @@ class TestHook(AbstractHook):
     async def post_list(self, rows):
         self.table_manager.hook_event_mock.post_list(rows)
 
-    async def pre_detail(self, pk, fields):
-        self.table_manager.hook_event_mock.pre_detail(pk, fields)
+    async def pre_detail(self, pk, pk_field, fields):
+        self.table_manager.hook_event_mock.pre_detail(pk, pk_field, fields)
 
     async def post_detail(self, row):
         self.table_manager.hook_event_mock.post_detail(row)

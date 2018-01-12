@@ -25,8 +25,8 @@ class TestHook(AbstractHook):
     async def post_list(self, rows):
         print('post_list, rows={!r}'.format(rows))
 
-    async def pre_detail(self, pk, fields):
-        print('pre_detail, pk={!r}, fields={!r}'.format(pk, fields))
+    async def pre_detail(self, pk, pk_field, fields):
+        print('pre_detail, pk={!r}, pk_field={!r}, fields={!r}'.format(pk, pk_field, fields))
 
     async def post_detail(self, row):
         print('post_detail, row={!r}'.format(row))

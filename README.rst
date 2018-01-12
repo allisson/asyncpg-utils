@@ -276,8 +276,8 @@ Table Manager Hook
         async def post_list(self, rows):
             print('post_list, rows={!r}'.format(rows))
 
-        async def pre_detail(self, pk, fields):
-            print('pre_detail, pk={!r}, fields={!r}'.format(pk, fields))
+        async def pre_detail(self, pk, pk_field, fields):
+            print('pre_detail, pk={!r}, pk_field={!r}, fields={!r}'.format(pk, pk_field, fields))
 
         async def post_detail(self, row):
             print('post_detail, row={!r}'.format(row))
@@ -333,7 +333,7 @@ Table Manager Hook
     post_create, row=<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>
     pre_list, fields=None, filters={}, order_by=None, order_by_sort='ASC'
     post_list, rows=[<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>]
-    pre_detail, pk=1, fields=None
+    pre_detail, pk=1, pk_field='id', fields=None
     post_detail, row=<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>
     pre_update, pk=1, data={'name': 'John Doe', 'dob': datetime.date(1983, 2, 9)}
     post_update, row=<Record id=1 name='John Doe' dob=datetime.date(1983, 2, 9)>
