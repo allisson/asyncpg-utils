@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+0.5.0
+~~~~~
+
+* Add limit/offset support.
+* Add count support.
+
 0.4.1
 ~~~~~
 

@@ -89,35 +89,35 @@ class TestHook(AbstractHook):
         super().__init__(table_manager)
         self.table_manager.hook_event_mock = asynctest.CoroutineMock()
 
-    async def pre_create(self, data):
-        self.table_manager.hook_event_mock.pre_create(data)
+    async def pre_create(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.pre_create(*args, **kwargs)
 
-    async def post_create(self, row):
-        self.table_manager.hook_event_mock.post_create(row)
+    async def post_create(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.post_create(*args, **kwargs)
 
-    async def pre_list(self, fields, filters, order_by, order_by_sort):
-        self.table_manager.hook_event_mock.pre_list(fields, filters, order_by, order_by_sort)
+    async def pre_list(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.pre_list(*args, **kwargs)
 
-    async def post_list(self, rows):
-        self.table_manager.hook_event_mock.post_list(rows)
+    async def post_list(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.post_list(*args, **kwargs)
 
-    async def pre_detail(self, pk, pk_field, fields):
-        self.table_manager.hook_event_mock.pre_detail(pk, pk_field, fields)
+    async def pre_detail(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.pre_detail(*args, **kwargs)
 
-    async def post_detail(self, row):
-        self.table_manager.hook_event_mock.post_detail(row)
+    async def post_detail(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.post_detail(*args, **kwargs)
 
-    async def pre_update(self, pk, data):
-        self.table_manager.hook_event_mock.pre_update(pk, data)
+    async def pre_update(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.pre_update(*args, **kwargs)
 
-    async def post_update(self, row):
-        self.table_manager.hook_event_mock.post_update(row)
+    async def post_update(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.post_update(*args, **kwargs)
 
-    async def pre_delete(self, pk):
-        self.table_manager.hook_event_mock.pre_delete(pk)
+    async def pre_delete(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.pre_delete(*args, **kwargs)
 
-    async def post_delete(self, pk):
-        self.table_manager.hook_event_mock.post_delete(pk)
+    async def post_delete(self, *args, **kwargs):
+        self.table_manager.hook_event_mock.post_delete(*args, **kwargs)
 
 
 @pytest.fixture

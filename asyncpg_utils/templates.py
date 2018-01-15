@@ -13,13 +13,19 @@ sql_create_template = Template(
 sql_list_template = Template(
     """
     SELECT
-    {% if not fields %}*{% else %}{% for field_name in fields %}{{ field_name }}{% if not loop.last %}, {% endif %}{% endfor %} {% endif %}
+    {% if count %}
+    COUNT(1)
+    {% else %}
+    {% if not fields %}*{% else %}{% for field_name in fields %}"{{ field_name }}"{% if not loop.last %}, {% endif %}{% endfor %} {% endif %}
+    {% endif %}
     FROM {{ table_name }}
     {% if filters %}
     WHERE
     {% for filter in filters %}"{{ filter }}" = ${{ loop.index }}{% endfor %}
     {% endif %}
     {% if order_by %}ORDER BY "{{ order_by }}" {{ order_by_sort }}{% endif %}
+    {% if limit %}LIMIT {{ limit }}{% endif %}
+    {% if offset %}OFFSET {{ offset }}{% endif %}
     """
 )
 
