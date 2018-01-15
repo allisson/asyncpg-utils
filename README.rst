@@ -204,6 +204,9 @@ TableManager
         print('table_manager.list, rows={!r}'.format(await table_manager.list()))
         print('table_manager.list, only_name_field, rows={!r}'.format(await table_manager.list(fields=['name'])))
         print('table_manager.list, filter_by_id, rows={!r}'.format(await table_manager.list(filters={'id': 999999})))
+        print('table_manager.list, order_by=name, order_by_sort=ASC, rows={!r}'.format(await table_manager.list(order_by='name', order_by_sort='ASC')))
+        print('table_manager.list, count=True, rows={!r}'.format(await table_manager.list(count=True)))
+        print('table_manager.list, limit=1, offset=0, rows={!r}'.format(await table_manager.list(limit=1, offset=0)))
 
 
     async def table_manager_detail():
@@ -238,6 +241,9 @@ TableManager
     table_manager.list, rows=[<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>]
     table_manager.list, only_name_field, rows=[<Record name='Allisson'>]
     table_manager.list, filter_by_id, rows=[]
+    table_manager.list, order_by=name, order_by_sort=ASC, rows=[<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>]
+    table_manager.list, count=True, rows=[<Record count=1>]
+    table_manager.list, limit=1, offset=0, rows=[<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>]
     table_manager.detail, row=<Record id=1 name='Allisson' dob=datetime.date(1983, 2, 9)>
     table_manager.detail, only_name_field, row=<Record name='Allisson'>
     table_manager.update, row=<Record id=1 name='John Doe' dob=datetime.date(1983, 2, 9)>
