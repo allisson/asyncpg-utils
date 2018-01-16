@@ -25,6 +25,17 @@ class TableManager:
         self.pk_field = pk_field
         self.hooks = [hook(self) for hook in hooks or []]
 
+    def parse_filters(self, filters):
+        result = {}
+
+        for field, value in filters.items():
+            lookup = 'exact'
+            if '__' in field:
+                field, lookup = field.split('__')
+            result[field] = {'lookup': lookup, 'value': value}
+
+        return result
+
     async def trigger_hooks(self, event_name, *args, **kwargs):
         for hook in self.hooks:
             await hook.trigger_event(event_name, *args, **kwargs)
@@ -42,14 +53,16 @@ class TableManager:
         return row
 
     async def list(
-            self, fields=None, filters=None, order_by=None,
-            order_by_sort='ASC', count=False, limit=None, offset=None):
+            self, fields=None, filters=None, filters_operator='AND',
+            order_by=None, order_by_sort='ASC', count=False, limit=None,
+            offset=None):
         filters = filters or {}
         filter_values = [filter_value for _, filter_value in filters.items()]
         sql_query = sql_list_template.render({
             'table_name': self.table_name,
             'fields': fields,
-            'filters': filters,
+            'filters': self.parse_filters(filters),
+            'filters_operator': filters_operator,
             'order_by': order_by,
             'order_by_sort': order_by_sort,
             'count': count,

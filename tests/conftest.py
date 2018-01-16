@@ -19,7 +19,7 @@ async def create_table(dsn):
     await conn.execute(
         """
         CREATE TABLE IF NOT EXISTS users(
-            id uuid PRIMARY KEY,
+            id serial PRIMARY KEY,
             name text,
             dob date
         )
@@ -78,7 +78,6 @@ def pool_database():
 @pytest.fixture
 def user_data():
     return {
-        'id': str(uuid.uuid4()),
         'name': 'Allisson',
         'dob': date(1983, 2, 9)
     }

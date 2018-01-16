@@ -14,14 +14,33 @@ sql_list_template = Template(
     """
     SELECT
     {% if count %}
-    COUNT(1)
+        COUNT(1)
     {% else %}
-    {% if not fields %}*{% else %}{% for field_name in fields %}"{{ field_name }}"{% if not loop.last %}, {% endif %}{% endfor %} {% endif %}
+        {% if not fields %}*{% else %}{% for field_name in fields %}"{{ field_name }}"{% if not loop.last %}, {% endif %}{% endfor %} {% endif %}
     {% endif %}
     FROM {{ table_name }}
     {% if filters %}
-    WHERE
-    {% for filter in filters %}"{{ filter }}" = ${{ loop.index }}{% endfor %}
+        WHERE
+        {% for field, value in filters.items() %}
+            {% if value['lookup'] == 'exact' %}
+            "{{ field }}" = ${{ loop.index }}
+            {% elif value['lookup'] == 'like' %}
+            "{{ field }}" LIKE ${{ loop.index }}
+            {% elif value['lookup'] == 'ilike' %}
+            "{{ field }}" ILIKE ${{ loop.index }}
+            {% elif value['lookup'] == 'in' %}
+            "{{ field }}" = any(${{ loop.index }})
+            {% elif value['lookup'] == 'gt' %}
+            "{{ field }}" > ${{ loop.index }}
+            {% elif value['lookup'] == 'gte' %}
+            "{{ field }}" >= ${{ loop.index }}
+            {% elif value['lookup'] == 'lt' %}
+            "{{ field }}" < ${{ loop.index }}
+            {% elif value['lookup'] == 'lte' %}
+            "{{ field }}" <= ${{ loop.index }}
+            {% endif %}
+            {% if not loop.last %}{{ filters_operator }}{% endif %}
+        {% endfor %}
     {% endif %}
     {% if order_by %}ORDER BY "{{ order_by }}" {{ order_by_sort }}{% endif %}
     {% if limit %}LIMIT {{ limit }}{% endif %}
