@@ -257,6 +257,31 @@ async def test_table_manager_list_with_limit_offset(table_manager, user_data):
     assert rows[0]['name'] == 'John Doe'
 
 
+async def test_table_manager_list_with_joins(post_table, comment_table, post_data, comment_data):
+    fields = [
+        'comments.id',
+        'comments.body',
+        'comments.pub_date',
+        'posts.title as post_title',
+        'posts.body as post_body',
+        'posts.pub_date as post_pub_date'
+    ]
+    joins = {'posts': {'type': 'INNER JOIN', 'source': 'comments.post_id', 'target': 'posts.id'}}
+    post_row = await post_table.create(post_data)
+    comment_data['post_id'] = post_row['id']
+    comment_row = await comment_table.create(comment_data)
+
+    rows = await comment_table.list(fields=fields, joins=joins, limit=1, offset=0)
+    assert len(rows) == 1
+    row = rows[0]
+    assert row['id'] == comment_row['id']
+    assert row['body'] == comment_row['body']
+    assert row['pub_date'] == comment_row['pub_date']
+    assert row['post_title'] == post_row['title']
+    assert row['post_body'] == post_row['body']
+    assert row['post_pub_date'] == post_row['pub_date']
+
+
 async def test_table_manager_detail(table_manager, user_data):
     created_row = await table_manager.create(user_data)
     selected_row = await table_manager.detail(created_row['id'])

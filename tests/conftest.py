@@ -1,7 +1,6 @@
 import asyncio
 import os
-import uuid
-from datetime import date
+from datetime import datetime, date
 
 import asyncpg
 import asynctest
@@ -22,7 +21,19 @@ async def create_table(dsn):
             id serial PRIMARY KEY,
             name text,
             dob date
-        )
+        );
+        CREATE TABLE IF NOT EXISTS posts(
+            id serial PRIMARY KEY,
+            title varchar(128),
+            body text,
+            pub_date timestamp
+        );
+        CREATE TABLE IF NOT EXISTS comments(
+            id serial PRIMARY KEY,
+            post_id integer references posts(id),
+            body text,
+            pub_date timestamp
+        );
         """
     )
     await conn.close()
@@ -32,7 +43,9 @@ async def drop_table(dsn):
     conn = await asyncpg.connect(dsn)
     await conn.execute(
         """
-        DROP TABLE users
+        DROP TABLE users;
+        DROP TABLE posts CASCADE;
+        DROP TABLE comments;
         """
     )
     await conn.close()
@@ -42,7 +55,9 @@ async def clear_table(dsn):
     conn = await asyncpg.connect(dsn)
     await conn.execute(
         """
-        TRUNCATE TABLE users
+        TRUNCATE TABLE users;
+        TRUNCATE TABLE posts CASCADE;
+        TRUNCATE TABLE comments;
         """
     )
     await conn.close()
@@ -80,6 +95,23 @@ def user_data():
     return {
         'name': 'Allisson',
         'dob': date(1983, 2, 9)
+    }
+
+
+@pytest.fixture
+def post_data():
+    return {
+        'title': 'Post Title',
+        'body': 'Post Body',
+        'pub_date': datetime.utcnow()
+    }
+
+
+@pytest.fixture
+def comment_data():
+    return {
+        'body': 'Comment Body',
+        'pub_date': datetime.utcnow()
     }
 
 
@@ -122,3 +154,13 @@ class TestHook(AbstractHook):
 @pytest.fixture
 def table_manager(database):
     return TableManager(database, 'users', hooks=(TestHook,))
+
+
+@pytest.fixture
+def post_table(database):
+    return TableManager(database, 'posts')
+
+
+@pytest.fixture
+def comment_table(database):
+    return TableManager(database, 'comments')

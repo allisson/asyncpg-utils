@@ -54,15 +54,17 @@ class TableManager:
 
     async def list(
             self, fields=None, filters=None, filters_operator='AND',
-            order_by=None, order_by_sort='ASC', count=False, limit=None,
-            offset=None):
+            joins=None, order_by=None, order_by_sort='ASC', count=False,
+            limit=None, offset=None):
         filters = filters or {}
         filter_values = [filter_value for _, filter_value in filters.items()]
+        joins = joins or {}
         sql_query = sql_list_template.render({
             'table_name': self.table_name,
             'fields': fields,
             'filters': self.parse_filters(filters),
             'filters_operator': filters_operator,
+            'joins': joins,
             'order_by': order_by,
             'order_by_sort': order_by_sort,
             'count': count,
