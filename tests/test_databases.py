@@ -1,5 +1,7 @@
 import pytest
 
+from asyncpg_utils.databases import PoolDatabase
+
 pytestmark = pytest.mark.asyncio
 
 
@@ -9,12 +11,16 @@ pytestmark = pytest.mark.asyncio
         pytest.lazy_fixture('pool_database')
     )
 )
-async def test_database_insert(selected_database, user_data):
-    row = await selected_database.insert('users', user_data)
+async def test_database_insert(selected_database, post_data):
+    if isinstance(selected_database, PoolDatabase):
+        await selected_database.init_pool()
+
+    row = await selected_database.insert('posts', post_data)
 
     assert row['id']
-    assert row['name'] == user_data['name']
-    assert row['dob'] == user_data['dob']
+    assert row['title'] == post_data['title']
+    assert row['body'] == post_data['body']
+    assert row['pub_date'] == post_data['pub_date']
 
 
 @pytest.mark.parametrize(
@@ -23,19 +29,23 @@ async def test_database_insert(selected_database, user_data):
         pytest.lazy_fixture('pool_database')
     )
 )
-async def test_database_query(selected_database, user_data):
-    await selected_database.insert('users', user_data)
+async def test_database_query(selected_database, post_data):
+    if isinstance(selected_database, PoolDatabase):
+        await selected_database.init_pool()
+
+    await selected_database.insert('posts', post_data)
     rows = await selected_database.query(
         """
-        SELECT * FROM users
+        SELECT * FROM posts
         """
     )
 
     assert len(rows) == 1
     row = rows[0]
     assert row['id']
-    assert row['name'] == user_data['name']
-    assert row['dob'] == user_data['dob']
+    assert row['title'] == post_data['title']
+    assert row['body'] == post_data['body']
+    assert row['pub_date'] == post_data['pub_date']
 
 
 @pytest.mark.parametrize(
@@ -44,25 +54,29 @@ async def test_database_query(selected_database, user_data):
         pytest.lazy_fixture('pool_database')
     )
 )
-async def test_database_query_one(selected_database, user_data):
-    await selected_database.insert('users', user_data)
+async def test_database_query_one(selected_database, post_data):
+    if isinstance(selected_database, PoolDatabase):
+        await selected_database.init_pool()
+
+    await selected_database.insert('posts', post_data)
     row = await selected_database.query_one(
         """
-        SELECT * FROM users
-        WHERE name = $1
+        SELECT * FROM posts
+        WHERE title = $1
         """,
-        'Allisson'
+        'Post Title'
     )
 
     assert row['id']
-    assert row['name'] == user_data['name']
-    assert row['dob'] == user_data['dob']
+    assert row['title'] == post_data['title']
+    assert row['body'] == post_data['body']
+    assert row['pub_date'] == post_data['pub_date']
 
 
-async def transaction_coroutine(conn, selected_database, user_data):
+async def transaction_coroutine(conn, selected_database, post_data):
     async with conn.transaction():
-        await selected_database.insert('users', user_data, connection=conn, close_connection=False)
-        await selected_database.insert('users', user_data, connection=conn, close_connection=False)
+        await selected_database.insert('posts', post_data, connection=conn, close_connection=False)
+        await selected_database.insert('posts', post_data, connection=conn, close_connection=False)
         raise Exception('BOOM!')
 
 
@@ -72,17 +86,20 @@ async def transaction_coroutine(conn, selected_database, user_data):
         pytest.lazy_fixture('pool_database')
     )
 )
-async def test_database_transaction(selected_database, user_data):
+async def test_database_transaction(selected_database, post_data):
+    if isinstance(selected_database, PoolDatabase):
+        await selected_database.init_pool()
+
     conn = await selected_database.get_connection()
 
     with pytest.raises(Exception):
-        await transaction_coroutine(conn, selected_database, user_data)
+        await transaction_coroutine(conn, selected_database, post_data)
 
     await conn.close()
 
     rows = await selected_database.query(
         """
-        SELECT * FROM users
+        SELECT * FROM posts
         """
     )
     assert len(rows) == 0

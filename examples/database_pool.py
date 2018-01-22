@@ -45,6 +45,7 @@ async def query_one():
 
 
 async def main():
+    await database.init_pool()
     print('create_table users, {!r}'.format(await create_table()))
     print('insert row, {!r}'.format(await insert_row({'name': 'John Doe', 'dob': date(2000, 1, 1)})))
     print('insert row, {!r}'.format(await insert_row({'name': 'Jane Doe', 'dob': date(2000, 1, 1)})))

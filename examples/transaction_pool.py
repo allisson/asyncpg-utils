@@ -30,6 +30,7 @@ async def transaction_coroutine(conn):
 
 
 async def main():
+    await database.init_pool()
     print('create_table users, {!r}'.format(await create_table()))
     conn = await database.get_connection()
 

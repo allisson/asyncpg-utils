@@ -17,11 +17,6 @@ async def create_table(dsn):
     conn = await asyncpg.connect(dsn)
     await conn.execute(
         """
-        CREATE TABLE IF NOT EXISTS users(
-            id serial PRIMARY KEY,
-            name text,
-            dob date
-        );
         CREATE TABLE IF NOT EXISTS posts(
             id serial PRIMARY KEY,
             title varchar(128),
@@ -43,7 +38,6 @@ async def drop_table(dsn):
     conn = await asyncpg.connect(dsn)
     await conn.execute(
         """
-        DROP TABLE users;
         DROP TABLE posts CASCADE;
         DROP TABLE comments;
         """
@@ -55,7 +49,6 @@ async def clear_table(dsn):
     conn = await asyncpg.connect(dsn)
     await conn.execute(
         """
-        TRUNCATE TABLE users;
         TRUNCATE TABLE posts CASCADE;
         TRUNCATE TABLE comments;
         """
@@ -88,14 +81,6 @@ def database():
 @pytest.fixture
 def pool_database():
     return PoolDatabase(dsn)
-
-
-@pytest.fixture
-def user_data():
-    return {
-        'name': 'Allisson',
-        'dob': date(1983, 2, 9)
-    }
 
 
 @pytest.fixture
@@ -152,15 +137,10 @@ class TestHook(AbstractHook):
 
 
 @pytest.fixture
-def table_manager(database):
-    return TableManager(database, 'users', hooks=(TestHook,))
-
-
-@pytest.fixture
 def post_table(database):
-    return TableManager(database, 'posts')
+    return TableManager(database, 'posts', hooks=(TestHook,))
 
 
 @pytest.fixture
 def comment_table(database):
-    return TableManager(database, 'comments')
+    return TableManager(database, 'comments', hooks=(TestHook,))

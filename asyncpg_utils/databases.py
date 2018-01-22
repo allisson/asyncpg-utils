@@ -78,10 +78,11 @@ class PoolDatabase(AbstractDatabase):
         self.pool = pool
         self.kwargs = kwargs
 
-    async def get_connection(self):
+    async def init_pool(self):
         if self.pool is None:
             self.pool = await asyncpg.create_pool(self.dsn, **self.kwargs)
 
+    async def get_connection(self):
         return await self.pool.acquire()
 
     async def call_connection_coroutine(
