@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+0.6.0
+~~~~~
+
+* Update readme with link for examples .
+* Add init_pool coroutine to PoolDatabase.
+* Add support for filters operators.
+* Add joins support.
+
 0.5.0
 ~~~~~
 
