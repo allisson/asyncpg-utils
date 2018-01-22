@@ -1,6 +1,6 @@
 import asyncio
 import os
-from datetime import datetime, date
+from datetime import datetime
 
 import asyncpg
 import asynctest
@@ -49,8 +49,8 @@ async def clear_table(dsn):
     conn = await asyncpg.connect(dsn)
     await conn.execute(
         """
-        TRUNCATE TABLE posts CASCADE;
-        TRUNCATE TABLE comments;
+        DELETE FROM comments;
+        DELETE FROM posts;
         """
     )
     await conn.close()
