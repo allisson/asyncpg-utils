@@ -1,4 +1,5 @@
-from datetime import date, datetime
+from contextlib import suppress
+from datetime import datetime
 
 import pytest
 
@@ -294,6 +295,29 @@ async def test_post_table_delete(post_table, post_data):
     assert len(rows) == 0
     assert post_table.hook_event_mock.pre_delete.called is True
     assert post_table.hook_event_mock.post_delete.called is True
+
+
+async def test_post_table_transaction(post_table, post_data):
+    conn = await post_table.database.get_connection()
+    with suppress(Exception):
+        async with conn.transaction():
+            await post_table.create(post_data, connection=conn, close_connection=False)
+            raise Exception('BOOM')
+    await conn.close()
+    rows = await post_table.list()
+    assert len(rows) == 0
+
+
+async def test_pool_post_table_transaction(pool_post_table, post_data):
+    await pool_post_table.database.init_pool()
+    conn = await pool_post_table.database.get_connection()
+    with suppress(Exception):
+        async with conn.transaction():
+            await pool_post_table.create(post_data, connection=conn, close_connection=False)
+            raise Exception('BOOM')
+    await pool_post_table.database.pool.release(conn)
+    rows = await pool_post_table.list()
+    assert len(rows) == 0
 
 
 async def test_hook_trigger_invalid_event(post_table, post_data):

@@ -40,7 +40,7 @@ class TableManager:
         for hook in self.hooks:
             await hook.trigger_event(event_name, *args, **kwargs)
 
-    async def create(self, data):
+    async def create(self, data, **kwargs):
         field_names = [field_name for field_name in data.keys()]
         field_values = [field_value for _, field_value in data.items()]
         sql_query = sql_create_template.render({
@@ -48,14 +48,14 @@ class TableManager:
             'field_names': field_names
         })
         await self.trigger_hooks('pre_create', data)
-        row = await self.database.query_one(sql_query, *field_values)
+        row = await self.database.query_one(sql_query, *field_values, **kwargs)
         await self.trigger_hooks('post_create', row)
         return row
 
     async def list(
             self, fields=None, filters=None, filters_operator='AND',
             joins=None, order_by=None, order_by_sort='ASC', count=False,
-            limit=None, offset=None):
+            limit=None, offset=None, **kwargs):
         filters = filters or {}
         filter_values = [filter_value for _, filter_value in filters.items()]
         joins = joins or {}
@@ -75,11 +75,11 @@ class TableManager:
             'pre_list', fields, filters, order_by, order_by_sort, count, limit,
             offset
         )
-        rows = await self.database.query(sql_query, *filter_values)
+        rows = await self.database.query(sql_query, *filter_values, **kwargs)
         await self.trigger_hooks('post_list', rows)
         return rows
 
-    async def detail(self, pk, pk_field=None, fields=None):
+    async def detail(self, pk, pk_field=None, fields=None, **kwargs):
         pk_field = pk_field or self.pk_field
         sql_query = sql_detail_template.render({
             'table_name': self.table_name,
@@ -87,11 +87,11 @@ class TableManager:
             'pk_field': pk_field
         })
         await self.trigger_hooks('pre_detail', pk, pk_field, fields)
-        row = await self.database.query_one(sql_query, pk)
+        row = await self.database.query_one(sql_query, pk, **kwargs)
         await self.trigger_hooks('post_detail', row)
         return row
 
-    async def update(self, pk, data):
+    async def update(self, pk, data, **kwargs):
         field_names = [field_name for field_name in data.keys()]
         field_values = [field_value for _, field_value in data.items()]
         sql_query = sql_update_template.render({
@@ -100,16 +100,16 @@ class TableManager:
             'pk_field': self.pk_field
         })
         await self.trigger_hooks('pre_update', pk, data)
-        row = await self.database.query_one(sql_query, *field_values, pk)
+        row = await self.database.query_one(sql_query, *field_values, pk, **kwargs)
         await self.trigger_hooks('post_update', row)
         return row
 
-    async def delete(self, pk):
+    async def delete(self, pk, **kwargs):
         sql_query = sql_delete_template.render({
             'table_name': self.table_name,
             'pk_field': self.pk_field
         })
         await self.trigger_hooks('pre_delete', pk)
-        await self.database.query_one(sql_query, pk)
+        await self.database.query_one(sql_query, pk, **kwargs)
         await self.trigger_hooks('post_delete', pk)
         return True

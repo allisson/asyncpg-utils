@@ -142,5 +142,10 @@ def post_table(database):
 
 
 @pytest.fixture
+def pool_post_table(pool_database):
+    return TableManager(pool_database, 'posts', hooks=(TestHook,))
+
+
+@pytest.fixture
 def comment_table(database):
     return TableManager(database, 'comments', hooks=(TestHook,))
