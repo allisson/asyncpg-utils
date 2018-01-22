@@ -214,14 +214,14 @@ async def test_post_table_list_with_limit_offset(post_table, post_data):
 
 
 async def test_post_table_list_with_joins(post_table, comment_table, post_data, comment_data):
-    fields = [
+    fields = (
         'comments.id',
         'comments.body',
         'comments.pub_date',
         'posts.title as post_title',
         'posts.body as post_body',
         'posts.pub_date as post_pub_date'
-    ]
+    )
     joins = {'posts': {'type': 'INNER JOIN', 'source': 'comments.post_id', 'target': 'posts.id'}}
     post_row = await post_table.create(post_data)
     comment_data['post_id'] = post_row['id']

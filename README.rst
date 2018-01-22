@@ -25,6 +25,8 @@ How to Use
 * `Transaction <https://github.com/allisson/asyncpg-utils/blob/master/examples/transaction.py>`_
 * `Transaction Pool <https://github.com/allisson/asyncpg-utils/blob/master/examples/transaction_pool.py>`_
 * `TableManager <https://github.com/allisson/asyncpg-utils/blob/master/examples/table_manager.py>`_
+* `TableManager Filters <https://github.com/allisson/asyncpg-utils/blob/master/examples/table_manager_filters.py>`_
+* `TableManager Joins <https://github.com/allisson/asyncpg-utils/blob/master/examples/table_manager_joins.py>`_
 * `TableManager Hook <https://github.com/allisson/asyncpg-utils/blob/master/examples/table_manager_hook.py>`_
 * `TableManager Transaction <https://github.com/allisson/asyncpg-utils/blob/master/examples/table_manager_transaction.py>`_
 * `TableManager Transaction Pool <https://github.com/allisson/asyncpg-utils/blob/master/examples/table_manager_transaction_pool.py>`_
