@@ -4,6 +4,8 @@ from datetime import date
 from asyncpg_utils.databases import Database
 from asyncpg_utils.managers import TableManager
 
+from utils import create_table, drop_table
+
 loop = asyncio.get_event_loop()
 database = Database('postgresql://postgres:postgres@localhost/asyncpg-utils')
 table_manager = TableManager(database, 'users', pk_field='id', hooks=None)
@@ -11,21 +13,6 @@ user_data = {
     'name': 'Allisson',
     'dob': date(1983, 2, 9)
 }
-
-
-async def create_table():
-    conn = await database.get_connection()
-    await conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS users(
-            id serial PRIMARY KEY,
-            name text,
-            dob date
-        )
-        """
-    )
-    await conn.close()
-    return True
 
 
 async def table_manager_create():
@@ -56,11 +43,12 @@ async def table_manager_delete():
 
 
 async def main():
-    print('create_table users, {!r}'.format(await create_table()))
+    await create_table(database)
     await table_manager_create()
     await table_manager_list()
     await table_manager_detail()
     await table_manager_update()
     await table_manager_delete()
+    await drop_table(database)
 
 loop.run_until_complete(main())

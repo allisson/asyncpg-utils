@@ -4,6 +4,8 @@ from datetime import date
 from asyncpg_utils.databases import Database
 from asyncpg_utils.managers import AbstractHook, TableManager
 
+from utils import create_table, drop_table
+
 loop = asyncio.get_event_loop()
 database = Database('postgresql://postgres:postgres@localhost/asyncpg-utils')
 user_data = {
@@ -13,63 +15,49 @@ user_data = {
 
 
 class TestHook(AbstractHook):
-    async def pre_create(self, data):
-        print('pre_create, data={!r}'.format(data))
+    async def pre_create(self, *args, **kwargs):
+        print('pre_create, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def post_create(self, row):
-        print('post_create, row={!r}'.format(row))
+    async def post_create(self, *args, **kwargs):
+        print('post_create, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def pre_list(self, fields, filters, order_by, order_by_sort, count, limit, offset):
-        print('pre_list, fields={!r}, filters={!r}, order_by={!r}, order_by_sort={!r}, count={!r}, limit={!r}, offset={!r}'.format(fields, filters, order_by, order_by_sort, count, limit, offset))
+    async def pre_list(self, *args, **kwargs):
+        print('pre_list, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def post_list(self, rows):
-        print('post_list, rows={!r}'.format(rows))
+    async def post_list(self, *args, **kwargs):
+        print('post_list, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def pre_detail(self, pk, pk_field, fields):
-        print('pre_detail, pk={!r}, pk_field={!r}, fields={!r}'.format(pk, pk_field, fields))
+    async def pre_detail(self, *args, **kwargs):
+        print('pre_detail, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def post_detail(self, row):
-        print('post_detail, row={!r}'.format(row))
+    async def post_detail(self, *args, **kwargs):
+        print('post_detail, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def pre_update(self, pk, data):
-        print('pre_update, pk={!r}, data={!r}'.format(pk, data))
+    async def pre_update(self, *args, **kwargs):
+        print('pre_update, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def post_update(self, row):
-        print('post_update, row={!r}'.format(row))
+    async def post_update(self, *args, **kwargs):
+        print('post_update, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def pre_delete(self, pk):
-        print('pre_delete, pk={!r}'.format(pk))
+    async def pre_delete(self, *args, **kwargs):
+        print('pre_delete, args={!r}, kwargs={!r}'.format(args, kwargs))
 
-    async def post_delete(self, pk):
-        print('post_delete, pk={!r}'.format(pk))
+    async def post_delete(self, *args, **kwargs):
+        print('post_delete, args={!r}, kwargs={!r}'.format(args, kwargs))
 
 
 table_manager = TableManager(database, 'users', pk_field='id', hooks=(TestHook,))
 
 
-async def create_table():
-    conn = await database.get_connection()
-    await conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS users(
-            id serial PRIMARY KEY,
-            name text,
-            dob date
-        )
-        """
-    )
-    await conn.close()
-    return True
-
-
 async def main():
-    print('create_table users, {!r}'.format(await create_table()))
+    await create_table(database)
     await table_manager.create(user_data)
     await table_manager.list()
     await table_manager.detail(1)
     user_data['name'] = 'John Doe'
     await table_manager.update(1, user_data)
     await table_manager.delete(1)
+    await drop_table(database)
 
 
 loop.run_until_complete(main())

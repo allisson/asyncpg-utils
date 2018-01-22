@@ -4,23 +4,10 @@ from datetime import date
 
 from asyncpg_utils.databases import Database
 
+from utils import create_table, drop_table
+
 loop = asyncio.get_event_loop()
 database = Database('postgresql://postgres:postgres@localhost/asyncpg-utils')
-
-
-async def create_table():
-    conn = await database.get_connection()
-    await conn.execute(
-        """
-        CREATE TABLE IF NOT EXISTS users(
-            id serial PRIMARY KEY,
-            name text,
-            dob date
-        )
-        """
-    )
-    await conn.close()
-    return True
 
 
 async def transaction_coroutine(conn):
@@ -30,7 +17,7 @@ async def transaction_coroutine(conn):
 
 
 async def main():
-    print('create_table users, {!r}'.format(await create_table()))
+    await create_table(database)
     conn = await database.get_connection()
 
     with suppress(Exception):
@@ -44,5 +31,6 @@ async def main():
         """
     )
     print('table users count, {}'.format(result['count']))
+    await drop_table(database)
 
 loop.run_until_complete(main())
