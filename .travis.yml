@@ -1,3 +1,4 @@
+dist: xenial
 env:
   - DATABASE_URL=postgresql://postgres:@localhost/travis_ci_test
 language: python
