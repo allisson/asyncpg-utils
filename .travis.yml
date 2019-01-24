@@ -12,7 +12,7 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 # command to install dependencies
 install:
-  - pip install -r -U requirements-dev.txt
+  - pip install -U -r requirements-dev.txt
 # command to run tests
 script:
   pytest
